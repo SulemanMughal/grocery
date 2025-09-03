@@ -90,11 +90,11 @@ export function usePrograms() {
   }
 
   const editProgram = (programId: string) => {
-    console.log("[v0] Edit program:", programId)
+    console.log("Edit program:", programId)
   }
 
   const viewProgram = (programId: string) => {
-    console.log("[v0] View program:", programId)
+    console.log("View program:", programId)
   }
 
   return {
