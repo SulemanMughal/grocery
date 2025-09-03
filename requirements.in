@@ -1,0 +1,9 @@
+django==5.2.5
+django_neomodel
+python-decouple
+neomodel
+djangorestframework
+django-cors-headers
+PyJWT
+drf-spectacular
+drf-spectacular-sidecar
