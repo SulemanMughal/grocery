@@ -9,18 +9,66 @@
         "/api/v1/auth/login/": {
             "post": {
                 "operationId": "auth_login_create",
+                "summary": "Login (email + password) → JWT access/refresh",
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     },
                     {}
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Logged in."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -28,18 +76,66 @@
         "/api/v1/auth/refresh/": {
             "post": {
                 "operationId": "auth_refresh_create",
+                "summary": "Refresh access token",
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     },
                     {}
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Access token refreshed."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -47,6 +143,8 @@
         "/api/v1/groceries/": {
             "get": {
                 "operationId": "groceries_list",
+                "description": "Return all active grocery accounts. Not part of assessment core, but useful for admin QA/debug.",
+                "summary": "List groceries (Admin only)",
                 "parameters": [
                     {
                         "name": "limit",
@@ -68,11 +166,11 @@
                     }
                 ],
                 "tags": [
-                    "groceries"
+                    "Groceries"
                 ],
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -80,7 +178,27 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PaginatedGroceryOutList"
+                                    "$ref": "#/components/schemas/Paginated_EnvList"
+                                }
+                            }
+                        },
+                        "description": "Groceries list."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -90,8 +208,9 @@
             },
             "post": {
                 "operationId": "groceries_create",
+                "summary": "Create a new grocery (Admin)",
                 "tags": [
-                    "groceries"
+                    "Groceries"
                 ],
                 "requestBody": {
                     "content": {
@@ -115,7 +234,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -123,7 +242,37 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GroceryCreate"
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Grocery created."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -134,9 +283,18 @@
         },
         "/api/v1/groceries/{grocery_uid}/income/": {
             "get": {
-                "operationId": "groceries_income_retrieve",
+                "operationId": "groceries_income_list",
                 "description": "Routes:\n  POST /api/v1/groceries/{grocery_uid}/income/   -> create (Admin or owning Supplier)\n  GET  /api/v1/groceries/{grocery_uid}/income/   -> list  (Admin; Supplier only for their grocery)\n    optional query params: ?start=YYYY-MM-DD&end=YYYY-MM-DD",
+                "summary": "List daily income (Admin any grocery; Supplier only their grocery)",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "end",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "YYYY-MM-DD"
+                    },
                     {
                         "in": "path",
                         "name": "grocery_uid",
@@ -144,125 +302,22 @@
                             "type": "string"
                         },
                         "required": true
-                    }
-                ],
-                "tags": [
-                    "groceries"
-                ],
-                "security": [
+                    },
                     {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "No response body"
-                    }
-                }
-            },
-            "post": {
-                "operationId": "groceries_income_create",
-                "description": "Routes:\n  POST /api/v1/groceries/{grocery_uid}/income/   -> create (Admin or owning Supplier)\n  GET  /api/v1/groceries/{grocery_uid}/income/   -> list  (Admin; Supplier only for their grocery)\n    optional query params: ?start=YYYY-MM-DD&end=YYYY-MM-DD",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "grocery_uid",
+                        "in": "query",
+                        "name": "start",
                         "schema": {
                             "type": "string"
                         },
-                        "required": true
+                        "description": "YYYY-MM-DD"
                     }
                 ],
                 "tags": [
-                    "groceries"
+                    "Income"
                 ],
                 "security": [
                     {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/groceries/{grocery_uid}/items/": {
-            "get": {
-                "operationId": "groceries_items_retrieve",
-                "description": "Routes:\n  GET  /api/v1/groceries/{grocery_uid}/items/       -> list\n  POST /api/v1/groceries/{grocery_uid}/items/       -> create",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "grocery_uid",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "groceries"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "No response body"
-                    }
-                }
-            },
-            "post": {
-                "operationId": "groceries_items_create",
-                "description": "Routes:\n  GET  /api/v1/groceries/{grocery_uid}/items/       -> list\n  POST /api/v1/groceries/{grocery_uid}/items/       -> create",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "grocery_uid",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "groceries"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/api/v1/groceries/{id}/": {
-            "get": {
-                "operationId": "groceries_retrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "groceries"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -270,7 +325,30 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GroceryOut"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/_Env"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Income list."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -278,8 +356,252 @@
                     }
                 }
             },
-            "put": {
-                "operationId": "groceries_update",
+            "post": {
+                "operationId": "groceries_income_create",
+                "description": "Routes:\n  POST /api/v1/groceries/{grocery_uid}/income/   -> create (Admin or owning Supplier)\n  GET  /api/v1/groceries/{grocery_uid}/income/   -> list  (Admin; Supplier only for their grocery)\n    optional query params: ?start=YYYY-MM-DD&end=YYYY-MM-DD",
+                "summary": "Add daily income (Admin or owning Supplier)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "grocery_uid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Income"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DailyIncomeCreateRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DailyIncomeCreateRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DailyIncomeCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Income recorded."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/groceries/{grocery_uid}/items/": {
+            "get": {
+                "operationId": "groceries_items_list",
+                "description": "Routes:\n  GET  /api/v1/groceries/{grocery_uid}/items/       -> list\n  POST /api/v1/groceries/{grocery_uid}/items/       -> create",
+                "summary": "List items for a grocery (any authenticated)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "grocery_uid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/_Env"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Items list."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "groceries_items_create",
+                "description": "Routes:\n  GET  /api/v1/groceries/{grocery_uid}/items/       -> list\n  POST /api/v1/groceries/{grocery_uid}/items/       -> create",
+                "summary": "Create item for a grocery (Admin or owning Supplier)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "grocery_uid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemCreateRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemCreateRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Item created."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/groceries/{id}/": {
+            "get": {
+                "operationId": "groceries_retrieve",
+                "description": "Get details of a single grocery by UID.",
+                "summary": "Retrieve grocery (Admin only)",
                 "parameters": [
                     {
                         "in": "path",
@@ -291,31 +613,11 @@
                     }
                 ],
                 "tags": [
-                    "groceries"
+                    "Groceries"
                 ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GroceryOutRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GroceryOutRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GroceryOutRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -323,7 +625,37 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GroceryOut"
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Grocery details."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -333,6 +665,7 @@
             },
             "patch": {
                 "operationId": "groceries_partial_update",
+                "summary": "Update grocery (Admin, partial)",
                 "parameters": [
                     {
                         "in": "path",
@@ -344,7 +677,7 @@
                     }
                 ],
                 "tags": [
-                    "groceries"
+                    "Groceries"
                 ],
                 "requestBody": {
                     "content": {
@@ -367,7 +700,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -375,7 +708,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GroceryUpdate"
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Grocery updated."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -385,6 +758,7 @@
             },
             "delete": {
                 "operationId": "groceries_destroy",
+                "summary": "Soft-delete grocery (Admin)",
                 "parameters": [
                     {
                         "in": "path",
@@ -396,16 +770,46 @@
                     }
                 ],
                 "tags": [
-                    "groceries"
+                    "Groceries"
                 ],
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
                     "204": {
-                        "description": "No response body"
+                        "description": "Grocery soft-deleted."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -414,6 +818,7 @@
             "patch": {
                 "operationId": "items_partial_update",
                 "description": "PATCH /api/v1/items/{item_uid}/\nDELETE /api/v1/items/{item_uid}/",
+                "summary": "Update item (Admin or owning Supplier, partial)",
                 "parameters": [
                     {
                         "in": "path",
@@ -425,22 +830,89 @@
                     }
                 ],
                 "tags": [
-                    "items"
+                    "Items"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedItemUpdateRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedItemUpdateRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedItemUpdateRequest"
+                            }
+                        }
+                    }
+                },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Item updated."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             },
             "delete": {
                 "operationId": "items_destroy",
                 "description": "PATCH /api/v1/items/{item_uid}/\nDELETE /api/v1/items/{item_uid}/",
+                "summary": "Soft-delete item (Admin or owning Supplier)",
                 "parameters": [
                     {
                         "in": "path",
@@ -452,16 +924,46 @@
                     }
                 ],
                 "tags": [
-                    "items"
+                    "Items"
                 ],
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
                     "204": {
-                        "description": "No response body"
+                        "description": "Item soft-deleted."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -469,8 +971,10 @@
         "/api/v1/suppliers/": {
             "post": {
                 "operationId": "suppliers_create",
+                "description": "Create a new supplier account, hash the password, and assign them as responsible for a grocery via a `RESPONSIBLE_FOR` relationship.",
+                "summary": "Create supplier & assign to grocery (Admin only)",
                 "tags": [
-                    "suppliers"
+                    "Suppliers"
                 ],
                 "requestBody": {
                     "content": {
@@ -494,7 +998,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -502,7 +1006,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SupplierCreate"
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Supplier created & assigned."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -512,8 +1056,10 @@
             }
         },
         "/api/v1/suppliers/{id}/": {
-            "put": {
-                "operationId": "suppliers_update",
+            "patch": {
+                "operationId": "suppliers_partial_update",
+                "description": "Update fields like name or role for a supplier. Automatically refreshes `updated_at`.",
+                "summary": "Update supplier (Admin only, partial)",
                 "parameters": [
                     {
                         "in": "path",
@@ -521,34 +1067,35 @@
                         "schema": {
                             "type": "string"
                         },
+                        "description": "The **UID of the Supplier** (Neo4j `UserNode.uid`) to update.",
                         "required": true
                     }
                 ],
                 "tags": [
-                    "suppliers"
+                    "Suppliers"
                 ],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserUpdateRequest"
+                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserUpdateRequest"
+                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserUpdateRequest"
+                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
                             }
                         }
                     }
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
@@ -556,59 +1103,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserUpdate"
+                                    "$ref": "#/components/schemas/_Env"
+                                }
+                            }
+                        },
+                        "description": "Supplier updated."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
                         "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "suppliers_partial_update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "suppliers"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedUserUpdateRequest"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
+                    },
+                    "401": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserUpdate"
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
                                 }
                             }
                         },
@@ -618,6 +1153,8 @@
             },
             "delete": {
                 "operationId": "suppliers_destroy",
+                "description": "Mark a supplier as inactive (`is_active=false`). Account is not removed from Neo4j, preserving history.",
+                "summary": "Soft-delete supplier (Admin only)",
                 "parameters": [
                     {
                         "in": "path",
@@ -625,20 +1162,51 @@
                         "schema": {
                             "type": "string"
                         },
+                        "description": "The **UID of the Supplier** (Neo4j `UserNode.uid`) to delete.",
                         "required": true
                     }
                 ],
                 "tags": [
-                    "suppliers"
+                    "Suppliers"
                 ],
                 "security": [
                     {
-                        "bearerAuth": []
+                        "BearerAuth": []
                     }
                 ],
                 "responses": {
                     "204": {
-                        "description": "No response body"
+                        "description": "Supplier soft-deleted."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -646,23 +1214,22 @@
     },
     "components": {
         "schemas": {
-            "GroceryCreate": {
+            "DailyIncomeCreateRequest": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string",
-                        "maxLength": 120,
-                        "minLength": 2
+                    "amount": {
+                        "type": "number",
+                        "format": "double",
+                        "minimum": 0
                     },
-                    "location": {
+                    "date": {
                         "type": "string",
-                        "maxLength": 200,
-                        "minLength": 2
+                        "format": "date"
                     }
                 },
                 "required": [
-                    "location",
-                    "name"
+                    "amount",
+                    "date"
                 ]
             },
             "GroceryCreateRequest": {
@@ -684,91 +1251,72 @@
                     "name"
                 ]
             },
-            "GroceryOut": {
+            "ItemCreateRequest": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "name": {
-                        "type": "string"
-                    },
-                    "location": {
-                        "type": "string"
-                    },
-                    "is_active": {
-                        "type": "boolean"
-                    },
-                    "created_at": {
                         "type": "string",
-                        "format": "date-time"
+                        "minLength": 1,
+                        "maxLength": 120
                     },
-                    "updated_at": {
+                    "item_type": {
                         "type": "string",
-                        "format": "date-time"
+                        "minLength": 1,
+                        "maxLength": 60
+                    },
+                    "item_location": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "double",
+                        "minimum": 0
                     }
                 },
                 "required": [
-                    "created_at",
-                    "id",
-                    "is_active",
-                    "location",
+                    "item_location",
+                    "item_type",
                     "name",
-                    "updated_at"
+                    "price"
                 ]
             },
-            "GroceryOutRequest": {
+            "LoginRequest": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "email": {
                         "type": "string",
+                        "format": "email",
                         "minLength": 1
                     },
-                    "name": {
+                    "password": {
                         "type": "string",
-                        "minLength": 1
-                    },
-                    "location": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "is_active": {
-                        "type": "boolean"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "minLength": 8
                     }
                 },
                 "required": [
-                    "created_at",
-                    "id",
-                    "is_active",
-                    "location",
-                    "name",
-                    "updated_at"
+                    "email",
+                    "password"
                 ]
             },
-            "GroceryUpdate": {
+            "Meta": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string",
-                        "maxLength": 120,
-                        "minLength": 2
+                    "version": {
+                        "type": "string"
                     },
-                    "location": {
+                    "trace_id": {
                         "type": "string",
-                        "maxLength": 200,
-                        "minLength": 2
+                        "nullable": true
                     }
-                }
+                },
+                "required": [
+                    "trace_id",
+                    "version"
+                ]
             },
-            "PaginatedGroceryOutList": {
+            "Paginated_EnvList": {
                 "type": "object",
                 "required": [
                     "count",
@@ -794,7 +1342,7 @@
                     "results": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/GroceryOut"
+                            "$ref": "#/components/schemas/_Env"
                         }
                     }
                 }
@@ -814,6 +1362,31 @@
                     }
                 }
             },
+            "PatchedItemUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "item_type": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 60
+                    },
+                    "item_location": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "double",
+                        "minimum": 0
+                    }
+                }
+            },
             "PatchedUserUpdateRequest": {
                 "type": "object",
                 "properties": {
@@ -827,6 +1400,55 @@
                     }
                 }
             },
+            "Problem": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "detail": {
+                        "type": "string"
+                    },
+                    "instance": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/Meta"
+                    }
+                },
+                "required": [
+                    "code",
+                    "meta",
+                    "status",
+                    "title",
+                    "type"
+                ]
+            },
+            "RefreshRequest": {
+                "type": "object",
+                "properties": {
+                    "refresh": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "refresh"
+                ]
+            },
             "RoleEnum": {
                 "enum": [
                     "ADMIN",
@@ -834,28 +1456,6 @@
                 ],
                 "type": "string",
                 "description": "* `ADMIN` - ADMIN\n* `SUPPLIER` - SUPPLIER"
-            },
-            "SupplierCreate": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "maxLength": 120,
-                        "minLength": 2
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "grocery_uid": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "email",
-                    "grocery_uid",
-                    "name"
-                ]
             },
             "SupplierCreateRequest": {
                 "type": "object",
@@ -887,31 +1487,47 @@
                     "password"
                 ]
             },
-            "UserUpdate": {
+            "TokenPairOut": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string",
-                        "maxLength": 120,
-                        "minLength": 2
+                    "access": {
+                        "type": "string"
                     },
-                    "role": {
-                        "$ref": "#/components/schemas/RoleEnum"
+                    "refresh": {
+                        "type": "string"
                     }
-                }
+                },
+                "required": [
+                    "access",
+                    "refresh"
+                ]
             },
-            "UserUpdateRequest": {
+            "_Env": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string",
-                        "minLength": 2,
-                        "maxLength": 120
+                    "success": {
+                        "type": "boolean"
                     },
-                    "role": {
-                        "$ref": "#/components/schemas/RoleEnum"
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/TokenPairOut"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/Meta"
                     }
-                }
+                },
+                "required": [
+                    "code",
+                    "data",
+                    "message",
+                    "meta",
+                    "success"
+                ]
             }
         }
     }

@@ -25,3 +25,6 @@ class ProblemSerializer(serializers.Serializer):
 
 def Problem(_slug: str = "server_error"):
     return ProblemSerializer
+
+
+

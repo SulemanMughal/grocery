@@ -2,6 +2,9 @@ from pathlib import Path
 from decouple import config, Csv
 from datetime import timedelta
 
+# import apps.authn.schema_extensions
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -146,6 +149,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # DRF & JWT (SimpleJWT)
 # ──────────────────────────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS" : "drf_spectacular.openapi.AutoSchema",
+    # "DEFAULT_SCHEMA_CLASS": "apps.schema_auth.GlobalHeaderAuthSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # "rest_framework_simplejwt.authentication.JWTAuthentication",
         'apps.authn.authentication.CustomJWTAuthentication',
@@ -167,7 +172,7 @@ REST_FRAMEWORK = {
         "anon": "100/day",  # 100 requests per day
     },
     "EXCEPTION_HANDLER": "common.exceptions.drf_exception_handler",
-    "DEFAULT_SCHEMA_CLASS" : "drf_spectacular.openapi.AutoSchema",
+    
 }
 
 
@@ -195,17 +200,39 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_DIST": "SIDECAR",   # use sidecar assets
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
-    # Security: add JWT bearer to the top bar
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'], # change it for production
+    
+    # Security configuration for JWT Bearer auth
+    # "SECURITY": [{"BearerAuth": []}],
     "SECURITY": [{"bearerAuth": []}],
-    "AUTHENTICATION_WHITELIST": [],  # keep empty unless using custom auth class not derived from DRF
+
     "COMPONENTS": {
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT",
+                "description": "Paste your access token **without** the word Bearer here; "
+                               "Swagger will add the prefix automatically.",
             }
         }
+    },
+    
+    # Swagger UI settings
+    'SWAGGER_UI_SETTINGS': {
+        'filter': True,
+        'persistAuthorization': True,
+        'deepLinking': True,
+        'displayOperationId': False,
+        'defaultModelsExpandDepth': 1,
+        'defaultModelExpandDepth': 1,
+        'defaultModelRendering': 'example',
+        'displayRequestDuration': True,
+        'docExpansion': 'none',
+        'operationsSorter': 'alpha',
+        'showExtensions': True,
+        'showCommonExtensions': True,
+        'tagsSorter': 'alpha'
     },
 }
 

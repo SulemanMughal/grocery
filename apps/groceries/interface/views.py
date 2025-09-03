@@ -46,6 +46,8 @@ class GroceryAdminViewSet(mixins.CreateModelMixin,
             401: Problem("unauthorized"),
             403: Problem("forbidden"),
         },
+        # security=[{"BearerAuth": []}],
+        # security=[{"bearerAuth": []}]
     )
     def list(self, request):
         data = list(self.repo.list_active())

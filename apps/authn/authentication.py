@@ -24,6 +24,7 @@ class CustomJWTAuthentication(BaseAuthentication):
     and returns a Principal + claims dict.
     """
     www_authenticate_realm = "api"
+    media_type = "application/json"
 
     def authenticate(self, request) -> Optional[Tuple[Principal, dict]]:
         auth = get_authorization_header(request).split()
