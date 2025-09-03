@@ -1,0 +1,14 @@
+# dependencies
+node_modules
+.pnp.*
+# build outputs
+.next/cache
+.next/trace
+out
+# misc
+.git
+.gitignore
+Dockerfile*
+docker-compose.*
+*.log
+.env*
