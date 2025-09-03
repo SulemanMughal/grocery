@@ -152,8 +152,8 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS" : "drf_spectacular.openapi.AutoSchema",
     # "DEFAULT_SCHEMA_CLASS": "apps.schema_auth.GlobalHeaderAuthSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
         'apps.authn.authentication.CustomJWTAuthentication',
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
     "DEFAULT_VERSION": "1",
