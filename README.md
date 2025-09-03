@@ -1,6 +1,10 @@
 
 # Grocery Project Setup Guide
 
+## Repository Branches
+- **Backend**: `main`
+- **Frontend**: `frontend`
+
 This guide will help you configure and run the initial setup for the Grocery Django project.
 
 ## Prerequisites
